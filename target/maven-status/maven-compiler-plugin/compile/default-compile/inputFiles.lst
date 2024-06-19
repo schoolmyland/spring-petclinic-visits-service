@@ -1,0 +1,7 @@
+/home/pet-clinic/split-service/spring-petclinic-visits-service/src/main/java/org/springframework/samples/petclinic/visits/DiscoveryConfig.java
+/home/pet-clinic/split-service/spring-petclinic-visits-service/src/main/java/org/springframework/samples/petclinic/visits/web/VisitResource.java
+/home/pet-clinic/split-service/spring-petclinic-visits-service/src/main/java/org/springframework/samples/petclinic/visits/model/Visit.java
+/home/pet-clinic/split-service/spring-petclinic-visits-service/src/main/java/org/springframework/samples/petclinic/visits/model/VisitRepository.java
+/home/pet-clinic/split-service/spring-petclinic-visits-service/src/main/java/org/springframework/samples/petclinic/visits/VisitsServiceApplication.java
+/home/pet-clinic/split-service/spring-petclinic-visits-service/src/main/java/org/springframework/samples/petclinic/visits/model/InitializeMySQLModel.java
+/home/pet-clinic/split-service/spring-petclinic-visits-service/src/main/java/org/springframework/samples/petclinic/visits/security/InsecurityConfiguration.java

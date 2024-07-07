@@ -2,6 +2,7 @@ pipeline {
     environment {
         DOCKER_ID = "poissonchat13"
         DOCKER_IMAGE = "spring-petclinic-visits-service"
+        JMETER_TAG = "vist"
     }
     agent any
 
@@ -9,8 +10,8 @@ pipeline {
         stage('Recuperation de la version Majeur') {
             steps {
                 script {
-                    VERSION_MAJEUR = sh(script: 'head -n 1 ./README.md', returnStdout: true).trim()
-                    env.DOCKER_TAG = "${VERSION_MAJEUR}.v.${BUILD_ID}"
+                    VERSION_MAJEUR = sh(script: 'head -n 5 ./README.md | tail -n 1', returnStdout: true).trim()
+                    env.DOCKER_TAG = "${VERSION_MAJEUR}.${BUILD_ID}"
                 }
             }
         }
@@ -20,9 +21,6 @@ pipeline {
             }
         }
         stage('Docker Build Dev') {
-            environment {
-                DOCKER_PASS = credentials("DOCKER_HUB_PASS")
-            }
             steps {
                 sh '''
                 docker build -t localhost:5000/$DOCKER_IMAGE:latest-dev .
@@ -56,8 +54,32 @@ pipeline {
                 sh '''
                 date >> /opt/custom/test/jmeter-commit-version.log
                 echo "$DOCKER_IMAGE:$DOCKER_TAG" >> /opt/custom/test/jmeter-commit-version.log
-                jmeter -n -t /opt/custom/test/petclinic_test_plan.jmx -l /opt/custom/test/petclinic_result_test.jtl
+                /opt/apache-jmeter/bin/jmeter -n -t /opt/custom/test/petclinic_test_plan.jmx -l /opt/custom/test/petclinic_result_test.jtl
                 '''
+            }
+        }
+        stage('Build Jmeter pour report') {
+            environment {
+                API_TOKEN = credentials("API_TOKEN")
+            }
+            steps {
+                script {
+                    def displayName = "${JMETER_TAG}-${DOCKER_TAG}"
+                    def description = "Build trigger by the job ${JOB_NAME}  On the microservice ${DOCKER_IMAGE} "
+
+                    def buildResult = build job: 'jmeter-perf-central', 
+                                           wait: true, 
+                                           propagate: false
+
+                    def jobUrl = buildResult.getAbsoluteUrl()
+
+                    echo "Job URL: ${jobUrl}"
+                    
+                    sh """
+                    curl -X POST -u ${API_TOKEN} -F 'json={"displayName":"${displayName}","description":"${description}"}' \
+                    '${jobUrl}configSubmit'
+                    """
+                }
             }
         }
         stage('Demontage Env Dev') {

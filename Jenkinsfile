@@ -30,6 +30,7 @@ pipeline {
             }
             steps {
                 sh '''
+                $JENK_TOOLBOX/ctrl/checkNamespaceUse.sh
                 cp -r ${JENK_TOOLBOX}/helm/* ./
                 rm -Rf .kube
                 mkdir .kube

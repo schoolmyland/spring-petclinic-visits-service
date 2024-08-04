@@ -25,7 +25,7 @@ pipeline {
                 '''
             }
         }
-        stage('Deploiement Developpement') {
+        stage('Deploiement Env Dev') {
             environment {
                 KUBECONFIG = credentials("confkub")
                 BDD_PASS = credentials("bdd_pass_dev")

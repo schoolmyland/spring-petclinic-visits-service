@@ -51,7 +51,13 @@ pipeline {
             }
             post {
                 failure {
-                    sh 'helm uninstall petclinic-dev'
+                    sh '''
+                    rm -Rf .kube
+                    mkdir .kube
+                    ls
+                    cat $KUBECONFIG > .kube/config
+                    helm uninstall petclinic-dev
+                    '''
                 }
             }
         }

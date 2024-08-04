@@ -39,7 +39,7 @@ pipeline {
                 ls
                 cat $KUBECONFIG > .kube/config
                 helm install petclinic-dev petclinic-dev --values=./petclinic-dev/value.yaml --set $JMETER_TAG.repo=localhost:5000 --set petclinic.bdpwd=$BDD_PASS
-                sleep 150 
+                sleep 180 
                 '''
             }
         }

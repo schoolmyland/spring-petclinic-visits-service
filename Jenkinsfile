@@ -1,15 +1,14 @@
 pipeline {
-    environment {
-        JENK_TOOLBOX = "/opt/jenkins"
-    }
     agent any
     stages {
-        stage('Recuperation de la version Majeur') {
+        stage('Mise en place des variables') {
             steps {
                 script {
                     VERSION_MAJEUR = sh(script: 'head -n 5 ./README.md | tail -n 1', returnStdout: true).trim()
                     env.DOCKER_TAG = "${VERSION_MAJEUR}.${BUILD_ID}"
-                    def jobName = env.JOB_NAME
+                    def jobDirName = env.JOB_NAME
+                    def splitDir = jobDirName.split('/') 
+                    def jobName = splitDir[1]
                     def splitParts = jobName.split('_')
                     def prefix = "spring-petclinic-"
                     env.JMETER_TAG = splitParts[0]
@@ -40,11 +39,11 @@ pipeline {
                 ls
                 cat $KUBECONFIG > .kube/config
                 helm install petclinic-dev petclinic-dev --values=./petclinic-dev/value.yaml --set $JMETER_TAG.repo=localhost:5000 --set petclinic.bdpwd=$BDD_PASS
-                sleep 120 
+                sleep 150 
                 '''
             }
         }
-        stage('Test Acceptance') {
+        stage('Test des pods') {
             steps {
                 script {
                 sh '$JENK_TOOLBOX/ctrl/checkpod.sh developpement'
@@ -70,7 +69,7 @@ pipeline {
             }
             steps {
                 script {
-                    def displayName = "${JMETER_TAG}-${DOCKER_TAG}"
+                    def displayName = "${JMETER_TAG}${DOCKER_TAG}"
                     def description = "Build trigger by the job ${JOB_NAME}  On the microservice ${DOCKER_IMAGE} "
 
                     def buildResult = build job: 'jmeter-perf-central', 

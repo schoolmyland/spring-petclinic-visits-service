@@ -38,7 +38,7 @@ pipeline {
                 mkdir .kube
                 ls
                 cat $KUBECONFIG > .kube/config
-                helm install petclinic-dev petclinic-dev --values=./petclinic-dev/value.yaml --set $JMETER_TAG.repo=localhost:5000 --set petclinic.bdpwd=$BDD_PASS
+                helm install petclinic-dev petclinic-dev --values=./petclinic-dev/value.yaml --set $JMETER_TAG.repo=localhost:5000 --set petclinic.bdpwd=$BDD_PASS --kubeconfig .kube/config
                 sleep 180 
                 '''
             }
@@ -56,7 +56,7 @@ pipeline {
                     mkdir .kube
                     ls
                     cat $KUBECONFIG > .kube/config
-                    helm uninstall petclinic-dev
+                    helm uninstall petclinic-dev --kubeconfig .kube/config
                     '''
                 }
             }
@@ -118,7 +118,7 @@ pipeline {
                 mkdir .kube
                 ls
                 cat $KUBECONFIG > .kube/config
-                helm uninstall petclinic-dev
+                helm uninstall petclinic-dev --kubeconfig .kube/config
                 '''
             }
         }

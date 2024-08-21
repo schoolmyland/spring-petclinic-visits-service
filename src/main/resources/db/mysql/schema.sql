@@ -1,5 +1,3 @@
-CREATE DATABASE IF NOT EXISTS service_instance_db;
-
 USE service_instance_db;
 
 CREATE TABLE IF NOT EXISTS visits (
